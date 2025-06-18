@@ -8,6 +8,7 @@
   opacity: 0.9;
   pointer-events: none;
   overflow: hidden;
+  z-index: 0;
 }
 
 .effect {

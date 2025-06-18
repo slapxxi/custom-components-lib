@@ -3,7 +3,15 @@ import styles from './useRipple.module.css';
 
 type Position = [number, number];
 
-export function useRipple<T extends HTMLElement>() {
+type Params = {
+  position?: Position;
+  manual?: boolean;
+};
+
+export function useRipple<T extends HTMLElement>(
+  params?: Params
+): [React.RefObject<T | null>, (pos?: Position) => void] {
+  const { position, manual = false } = params ?? {};
   const ref = useRef<T>(null);
 
   useEffect(() => {
@@ -18,10 +26,13 @@ export function useRipple<T extends HTMLElement>() {
       const rect = ct.getBoundingClientRect();
       const dx = (e.clientX - rect.x) / rect.width;
       const dy = (e.clientY - rect.y) / rect.height;
-      appendEffect(ct, [dx, dy]);
+      appendEffect(ct, position ? position : [dx, dy]);
     }
 
-    container.addEventListener('pointerdown', handleClick);
+    if (!manual) {
+      container.addEventListener('pointerdown', handleClick);
+    }
+
     container.classList.add(styles.root);
 
     return () => {
@@ -32,7 +43,14 @@ export function useRipple<T extends HTMLElement>() {
     };
   }, [ref.current]);
 
-  return ref;
+  return [
+    ref,
+    (pos?: Position) => {
+      if (ref.current !== null) {
+        appendEffect(ref.current, pos || position);
+      }
+    },
+  ];
 }
 
 function appendEffect(node: HTMLElement, pos: Position = [0.5, 0.5]) {

@@ -4,8 +4,11 @@
 :root {
   --theme-em: #1976d2;
   --theme-em-dark: #1565c0;
+  --theme-em-light: #a7caed;
+
   --theme-bg: #fff;
   --theme-bg-dark: #f6fafd;
+  --theme-bg-light: #f5f5f5;
 }
 
 .sc-container {
