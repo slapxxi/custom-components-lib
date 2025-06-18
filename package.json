@@ -20,8 +20,11 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
+    "watch": "webpack --watch",
+    "serve": "webpack serve --open --mode development",
+    "build": "webpack --mode production",
     "test": "jest",
-    "lint": "npx eslint",
+    "lint": "eslint src/",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -36,19 +39,31 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "babel-jest": "^30.0.0",
+    "css-loader": "^7.1.2",
     "eslint": "^9.29.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.2.0",
+    "html-webpack-plugin": "^5.6.3",
     "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
+    "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.5.3",
     "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "style-loader": "^4.0.0",
     "ts-jest": "^29.4.0",
+    "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typed-css-modules": "^0.9.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.1"
+    "typescript-eslint": "^8.34.1",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
   }
 }
