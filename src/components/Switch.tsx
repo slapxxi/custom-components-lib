@@ -11,7 +11,7 @@ type SwitchProps = {
 
 export const Switch: React.FC<SwitchProps> = (props) => {
   const { checked = false, disabled = false, onChange, ...rest } = props;
-  const [rippleRef, trigger] = useRipple({
+  const [rippleRef, triggerRipple] = useRipple({
     position: [0.5, 0.5],
     manual: true,
   });
@@ -21,11 +21,11 @@ export const Switch: React.FC<SwitchProps> = (props) => {
       return;
     }
     onChange?.(!checked);
-    trigger();
+    triggerRipple();
   }
 
   useEffect(() => {
-    trigger();
+    triggerRipple();
   }, [checked]);
 
   return (
