@@ -1,37 +1,56 @@
-import React, { useId, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 import styles from './Select.module.css';
 import { createPortal } from 'react-dom';
 import { useRipple } from '../hooks/useRipple';
 import { classNames } from '../lib/utils';
 import { useClickOutside } from '../hooks/useClickOutside';
-
-const SelectItemSymbol = Symbol('SelectItem');
+import { useOnScroll } from '../hooks/useOnScroll';
 
 type SelectItemValue = {
   value: SelectItemProps['value'];
   children: SelectItemProps['children'];
 };
 
-type ModifiedEvent<T extends React.SyntheticEvent> = T & {
-  [SelectItemSymbol]: SelectItemValue;
-};
-
 type SelectProps<T = unknown> = {
   label: string;
   value?: T;
   children?: React.ReactNode;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 
 type SelectStatus = 'idle' | 'open' | 'dirty' | 'selected';
+
+type TSelectContext<T = unknown> = {
+  value: T;
+  change: (item: SelectItemValue) => void;
+};
+
+const SelectContext = createContext<TSelectContext | null>(null);
+
+function useSelectContext() {
+  const context = useContext(SelectContext);
+  return context;
+}
 
 export const Select: React.FC<SelectProps> = (props) => {
   const { children, value, label, onChange } = props;
   const id = useId();
   const [status, setStatus] = useState<SelectStatus>('idle');
-  const [output, setOutput] = useState<React.ReactNode>(String(value));
+  const [output, setOutput] = useState(value ? String(value) : '');
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useOnScroll(() => {
+    if (status === 'open') {
+      setStatus('idle');
+    }
+  });
 
   useClickOutside([containerRef, menuRef], () => {
     switch (status) {
@@ -56,10 +75,13 @@ export const Select: React.FC<SelectProps> = (props) => {
     }
   }
 
-  function handleChange(selectItemValue: SelectItemValue) {
-    setStatus('selected');
-    setOutput(selectItemValue.children);
-    onChange?.(selectItemValue.value);
+  function handleChange(selectedItem: SelectItemValue) {
+    setStatus('idle');
+
+    if (onChange) {
+      onChange?.(selectedItem.value);
+      setOutput(selectedItem.children as unknown as string);
+    }
   }
 
   return (
@@ -84,7 +106,7 @@ export const Select: React.FC<SelectProps> = (props) => {
       </label>
 
       <div className={classNames(styles.output, value && styles.outputActive)}>
-        {output || label}
+        {value ? output : label}
       </div>
 
       {status !== 'open' && (
@@ -115,14 +137,15 @@ export const Select: React.FC<SelectProps> = (props) => {
         <legend className={styles.legend}>{label}</legend>
       </fieldset>
 
-      <SelectMenu
-        open={status === 'open'}
-        onChange={handleChange}
-        ref={menuRef}
-        parentRef={containerRef}
-      >
-        {children}
-      </SelectMenu>
+      <SelectContext.Provider value={{ value, change: handleChange }}>
+        <SelectMenu
+          open={status === 'open'}
+          ref={menuRef}
+          parentRef={containerRef}
+        >
+          {children}
+        </SelectMenu>
+      </SelectContext.Provider>
     </div>
   );
 };
@@ -135,15 +158,23 @@ type SelectItemProps = {
 export const SelectItem: React.FC<SelectItemProps> = (props) => {
   const { children, value } = props;
   const [rippleRef] = useRipple<HTMLDivElement>();
+  const selectContext = useSelectContext();
 
-  function handleClick(e: React.MouseEvent) {
-    Object.defineProperty(e, SelectItemSymbol, {
-      value: { value, children },
-    });
+  function handleClick() {
+    if (selectContext) {
+      selectContext.change({ value, children });
+    }
   }
 
   return (
-    <div className={styles.item} onClick={handleClick} ref={rippleRef}>
+    <div
+      className={classNames(
+        styles.item,
+        value === selectContext?.value && styles.itemActive
+      )}
+      onClick={handleClick}
+      ref={rippleRef}
+    >
       {children}
     </div>
   );
@@ -153,7 +184,6 @@ type SelectMenuProps = {
   open: boolean;
   children?: React.ReactNode;
   parentRef?: React.RefObject<HTMLElement | null>;
-  onChange: (item: SelectItemValue) => void;
 };
 
 // eslint-disable-next-line
@@ -161,27 +191,21 @@ const SelectMenu = React.forwardRef<HTMLDivElement, SelectMenuProps>(
   (props, ref) => {
     const { open, children, parentRef } = props;
     const rect = parentRef?.current?.getBoundingClientRect() ?? {
-      x: 0,
-      y: 0,
+      top: 0,
+      left: 0,
       width: 0,
       height: 0,
     };
-
-    function handleClick(e: ModifiedEvent<React.MouseEvent>) {
-      const value = e[SelectItemSymbol];
-      if (open && value) {
-        props.onChange(value);
-      }
-    }
 
     return createPortal(
       <div
         className={classNames(styles.menu, open && styles.menuOpen)}
         ref={ref}
-        style={{ left: rect.x, top: rect.y + rect.height }}
-        onClick={(e: React.MouseEvent) =>
-          handleClick(e as ModifiedEvent<React.MouseEvent>)
-        }
+        style={{
+          left: rect.left,
+          top: rect.top + rect.height,
+          minWidth: rect.width,
+        }}
       >
         {children}
       </div>,

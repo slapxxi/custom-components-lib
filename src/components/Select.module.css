@@ -37,7 +37,7 @@
 }
 
 .menu {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
 
@@ -49,7 +49,7 @@
 
   font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.75;
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: var(--theme-bg);
   box-shadow:
     0px 3px 5px -1px rgba(0, 0, 0, 0.2),
@@ -61,25 +61,35 @@
   transition:
     opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .menuOpen {
   opacity: 1;
   transform: none;
   transition-delay: 0s;
+  pointer-events: initial;
 }
 
 .item {
   --ripple: #cbcbcb;
   position: relative;
-  padding: 5px 10px;
+  padding: 10px 16px;
   cursor: pointer;
   user-select: none;
   overflow: hidden;
 }
 
 .item:hover {
-  background-color: #f0f0f0;
+  background-color: #f3f3f3;
+}
+
+.itemActive {
+  background-color: #efeff3;
+}
+
+.itemActive:hover {
+  background-color: #efeff3;
 }
 
 .output {
@@ -89,6 +99,7 @@
 }
 
 .outputActive {
+  color: #111;
   opacity: 1;
 }
 
@@ -98,26 +109,36 @@
 }
 
 .label {
+  overflow: hidden;
   box-sizing: border-box;
   position: absolute;
   left: 14px;
   bottom: 50%;
   padding: 3px;
   transform: translateY(50%);
-  background-color: var(--theme-bg);
+  max-width: 80%;
+  max-height: 32px;
   color: #777;
   transition:
     left 150ms cubic-bezier(0.4, 0, 0.2, 1),
     bottom 150ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .labelActive {
   position: absolute;
   bottom: 100%;
   color: #777;
+  background-color: var(--theme-bg);
 }
 
 .labelActive {
   color: var(--theme-em);
+}
+
+.placeholder {
+  visibility: hidden;
 }
