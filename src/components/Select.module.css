@@ -1,25 +1,39 @@
 .container {
+  --border: #b0b0b0;
   position: relative;
   display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
   align-items: center;
+  min-width: 120px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.75;
-  padding: 20px;
+  padding: 10px 16px;
+  padding-right: 10px;
+  gap: 4px;
   cursor: pointer;
   user-select: none;
+  color: #757575;
+}
+
+.containerActive {
+  --border: var(--theme-em);
 }
 
 .fieldset {
   position: absolute;
-  top: 0;
+  top: -6px;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 6px);
+  border: 1px solid var(--border);
   border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .legend {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .menu {
@@ -29,13 +43,13 @@
 
   overflow: hidden;
   display: flex;
-  min-width: max-content;
+  min-width: 120px;
   flex-direction: column;
   z-index: 1;
 
   font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.75;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: var(--theme-bg);
   box-shadow:
     0px 3px 5px -1px rgba(0, 0, 0, 0.2),
@@ -62,4 +76,48 @@
   cursor: pointer;
   user-select: none;
   overflow: hidden;
+}
+
+.item:hover {
+  background-color: #f0f0f0;
+}
+
+.output {
+  font-size: 18px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.outputActive {
+  opacity: 1;
+}
+
+.icon {
+  margin-left: auto;
+  fill: currentColor;
+}
+
+.label {
+  box-sizing: border-box;
+  position: absolute;
+  left: 14px;
+  bottom: 50%;
+  padding: 3px;
+  transform: translateY(50%);
+  background-color: var(--theme-bg);
+  color: #777;
+  transition:
+    left 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    bottom 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.labelActive {
+  position: absolute;
+  bottom: 100%;
+  color: #777;
+}
+
+.labelActive {
+  color: var(--theme-em);
 }

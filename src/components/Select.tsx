@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useId, useRef, useState } from 'react';
 import styles from './Select.module.css';
 import { createPortal } from 'react-dom';
 import { useRipple } from '../hooks/useRipple';
@@ -16,9 +16,9 @@ type ModifiedEvent<T extends React.SyntheticEvent> = T & {
   [SelectItemSymbol]: SelectItemValue;
 };
 
-type SelectProps = {
+type SelectProps<T = unknown> = {
   label: string;
-  value?: string;
+  value?: T;
   children?: React.ReactNode;
   onChange: (value: string) => void;
 };
@@ -26,9 +26,10 @@ type SelectProps = {
 type SelectStatus = 'idle' | 'open' | 'dirty' | 'selected';
 
 export const Select: React.FC<SelectProps> = (props) => {
-  const { children, value = '', label, onChange } = props;
+  const { children, value, label, onChange } = props;
+  const id = useId();
   const [status, setStatus] = useState<SelectStatus>('idle');
-  const [output, setOutput] = useState<React.ReactNode>(value);
+  const [output, setOutput] = useState<React.ReactNode>(String(value));
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -56,18 +57,59 @@ export const Select: React.FC<SelectProps> = (props) => {
   }
 
   function handleChange(selectItemValue: SelectItemValue) {
-    setStatus('dirty');
+    setStatus('selected');
     setOutput(selectItemValue.children);
     onChange?.(selectItemValue.value);
   }
 
   return (
-    <div ref={containerRef} className={styles.container} onClick={handleClick}>
-      <div className={styles.output}>{output || label}</div>
+    <div
+      ref={containerRef}
+      className={classNames(
+        styles.container,
+        (value || status === 'open' || status === 'dirty') &&
+          styles.containerActive
+      )}
+      onClick={handleClick}
+    >
+      <label
+        htmlFor={id}
+        className={classNames(
+          styles.label,
+          (value || status === 'open' || status === 'dirty') &&
+            styles.labelActive
+        )}
+      >
+        {label}
+      </label>
 
-      <svg focusable={false} aria-hidden viewBox="0 0 24 24" width="24">
-        <path d="M7 10l5 5 5-5z" />
-      </svg>
+      <div className={classNames(styles.output, value && styles.outputActive)}>
+        {output || label}
+      </div>
+
+      {status !== 'open' && (
+        <svg
+          focusable={false}
+          aria-hidden
+          viewBox="0 0 24 24"
+          width="24"
+          className={styles.icon}
+        >
+          <path d="M7 10l5 5 5-5z" />
+        </svg>
+      )}
+
+      {status === 'open' && (
+        <svg
+          focusable="false"
+          aria-hidden
+          viewBox="0 0 24 24"
+          width="24"
+          className={styles.icon}
+        >
+          <path d="M7 15 12 10 17 15Z" />
+        </svg>
+      )}
 
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>{label}</legend>
@@ -75,9 +117,9 @@ export const Select: React.FC<SelectProps> = (props) => {
 
       <SelectMenu
         open={status === 'open'}
+        onChange={handleChange}
         ref={menuRef}
         parentRef={containerRef}
-        onChange={handleChange}
       >
         {children}
       </SelectMenu>
