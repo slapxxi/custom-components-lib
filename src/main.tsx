@@ -5,14 +5,18 @@ import { Select, SelectItem } from './components/Select';
 
 function App() {
   const [value, setValue] = React.useState('');
-  console.log(value);
 
   return (
     <div className="sc-container">
-      <Select label="Controlled Component" value={value} onChange={setValue}>
+      <Select
+        label="Controlled Component"
+        value={value}
+        onChange={(value) => setValue(value)}
+      >
         <SelectItem value="1">Item 1</SelectItem>
         <SelectItem value="2">Item 2</SelectItem>
         <SelectItem value="3">Item 3</SelectItem>
+        <SelectItem value="4">Item 4</SelectItem>
         <SelectItem value="69">Item Sixty Nine</SelectItem>
       </Select>
     </div>

@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -17,17 +18,20 @@ type SelectItemValue = {
   children: SelectItemProps['children'];
 };
 
-type SelectProps<T = unknown> = {
+type SelectProps = {
   label: string;
-  value?: T;
+  value?: string;
   children?: React.ReactNode;
   onChange?: (value: string) => void;
 };
 
 type SelectStatus = 'idle' | 'open' | 'dirty' | 'selected';
 
-type TSelectContext<T = unknown> = {
-  value: T;
+type ChildrenMap = Record<string, React.ReactNode>;
+
+type TSelectContext = {
+  value?: string;
+  map: React.MutableRefObject<ChildrenMap>;
   change: (item: SelectItemValue) => void;
 };
 
@@ -41,8 +45,9 @@ function useSelectContext() {
 export const Select: React.FC<SelectProps> = (props) => {
   const { children, value, label, onChange } = props;
   const id = useId();
+  const mapRef = useRef<ChildrenMap>({});
   const [status, setStatus] = useState<SelectStatus>('idle');
-  const [output, setOutput] = useState(value ? String(value) : '');
+  const [output, setOutput] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -83,6 +88,15 @@ export const Select: React.FC<SelectProps> = (props) => {
       setOutput(selectedItem.children as unknown as string);
     }
   }
+
+  useLayoutEffect(() => {
+    if (value) {
+      // @ts-expect-error cause big reasons
+      setOutput(mapRef.current[value] ?? label);
+    } else {
+      setOutput(label);
+    }
+  }, [value]);
 
   return (
     <div
@@ -137,7 +151,9 @@ export const Select: React.FC<SelectProps> = (props) => {
         <legend className={styles.legend}>{label}</legend>
       </fieldset>
 
-      <SelectContext.Provider value={{ value, change: handleChange }}>
+      <SelectContext.Provider
+        value={{ value, change: handleChange, map: mapRef }}
+      >
         <SelectMenu
           open={status === 'open'}
           ref={menuRef}
@@ -159,6 +175,10 @@ export const SelectItem: React.FC<SelectItemProps> = (props) => {
   const { children, value } = props;
   const [rippleRef] = useRipple<HTMLDivElement>();
   const selectContext = useSelectContext();
+
+  if (selectContext) {
+    selectContext.map.current[value] = children;
+  }
 
   function handleClick() {
     if (selectContext) {
@@ -186,7 +206,6 @@ type SelectMenuProps = {
   parentRef?: React.RefObject<HTMLElement | null>;
 };
 
-// eslint-disable-next-line
 const SelectMenu = React.forwardRef<HTMLDivElement, SelectMenuProps>(
   (props, ref) => {
     const { open, children, parentRef } = props;
@@ -213,3 +232,5 @@ const SelectMenu = React.forwardRef<HTMLDivElement, SelectMenuProps>(
     );
   }
 );
+
+SelectMenu.displayName = 'SelectMenu';
