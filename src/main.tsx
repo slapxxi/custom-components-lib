@@ -1,14 +1,16 @@
 import './styles.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Button } from './components/Button';
+import { Select, SelectItem } from './components/Select';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <div className="sc-container">
-      <Button size="large">Contained</Button>
-      <Button variant="text">Text</Button>
-      <Button variant="outlined">Outlined</Button>
+      <Select label="Age" onChange={(value) => console.log(value)}>
+        <SelectItem value="1">Item 1</SelectItem>
+        <SelectItem value="2">Item 2</SelectItem>
+        <SelectItem value="3">Item 3</SelectItem>
+      </Select>
     </div>
   </React.StrictMode>
 );
