@@ -45,6 +45,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
 
   return createPortal(
     <div
+      data-testid="modal"
       className={classNames(styles.container, open && styles.containerOpen)}
       onClick={handleClick}
     >

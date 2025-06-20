@@ -23,8 +23,14 @@ export const TextField: React.FC<TextFieldProps> = (props) => {
         id={id || rId}
         {...rest}
       />
-      <span className={styles.label}>{error ? 'Error' : label}</span>
-      {error && <span className={styles.error}>{error}</span>}
+      <span className={styles.label} data-testid="label">
+        {error ? 'Error' : label}
+      </span>
+      {error && (
+        <span className={styles.error} data-testid="error">
+          {error}
+        </span>
+      )}
     </label>
   );
 };

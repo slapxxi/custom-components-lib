@@ -109,6 +109,7 @@ export const Select: React.FC<SelectProps> = (props) => {
       onClick={handleClick}
     >
       <label
+        data-testid="label"
         htmlFor={id}
         className={classNames(
           styles.label,
@@ -119,7 +120,10 @@ export const Select: React.FC<SelectProps> = (props) => {
         {label}
       </label>
 
-      <div className={classNames(styles.output, value && styles.outputActive)}>
+      <div
+        className={classNames(styles.output, value && styles.outputActive)}
+        data-testid="output"
+      >
         {value ? output : label}
       </div>
 
@@ -218,6 +222,7 @@ const SelectMenu = React.forwardRef<HTMLDivElement, SelectMenuProps>(
 
     return createPortal(
       <div
+        data-testid="menu"
         className={classNames(styles.menu, open && styles.menuOpen)}
         ref={ref}
         style={{
