@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import styles from './Switch.module.css';
 import { useRipple } from '../hooks/useRipple';
 import { classNames } from '../lib/utils';
+import { useInitialRender } from '../hooks/useInitialRender';
 
 type SwitchProps = {
   checked?: boolean;
@@ -15,6 +16,7 @@ export const Switch: React.FC<SwitchProps> = (props) => {
     position: [0.5, 0.5],
     manual: true,
   });
+  const initialRender = useInitialRender();
 
   function handleClick() {
     if (disabled) {
@@ -25,7 +27,9 @@ export const Switch: React.FC<SwitchProps> = (props) => {
   }
 
   useEffect(() => {
-    triggerRipple();
+    if (!initialRender) {
+      triggerRipple();
+    }
   }, [checked]);
 
   return (
