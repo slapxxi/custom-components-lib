@@ -1,19 +1,30 @@
-/* eslint-disable */
-import React from 'react';
+import React, { useId } from 'react';
+import styles from './TextField.module.css';
+import { classNames } from '../lib/utils';
 
 type TextFieldProps = {
+  label?: string;
   error?: string;
-} & React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->;
+} & React.ComponentPropsWithRef<'input'>;
 
 export const TextField: React.FC<TextFieldProps> = (props) => {
-  const { children, error, ...rest } = props;
+  const { label, error, id, ...rest } = props;
+  const rId = useId();
 
   return (
-    <div {...rest}>
-      <input type="text" />
-    </div>
+    <label
+      className={classNames(styles.container, error && styles.containerError)}
+      htmlFor={id || rId}
+    >
+      <input
+        type="text"
+        className={styles.input}
+        placeholder=" "
+        id={id || rId}
+        {...rest}
+      />
+      <span className={styles.label}>{error ? 'Error' : label}</span>
+      {error && <span className={styles.error}>{error}</span>}
+    </label>
   );
 };

@@ -3,7 +3,7 @@
   --backdrop: transparent;
   box-sizing: border-box;
   position: relative;
-  display: inline-grid;
+  display: inline-flex;
   align-items: center;
   width: 42px;
   height: 42px;

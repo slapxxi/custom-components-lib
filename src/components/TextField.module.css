@@ -1,0 +1,91 @@
+.container {
+  --border: #b0b0b0;
+  --text: #111;
+  --outline: transparent;
+  --label: #757575;
+  display: inline-flex;
+  align-items: center;
+  min-width: 180px;
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: #757575;
+  outline: 1px solid var(--outline);
+}
+
+.container:hover {
+  --border: #111;
+}
+
+.container:focus-within {
+  --border: var(--theme-em);
+  --outline: var(--theme-em);
+  --label: var(--theme-em);
+  color: var(--text);
+}
+
+.container:focus-within .label,
+.input:not(:placeholder-shown) + .label,
+.containerError .label {
+  transform: translateY(50%) translateY(-45px) scale(0.8);
+  background-color: var(--theme-bg);
+  font-weight: 500;
+}
+
+.containerError {
+  --border: firebrick;
+  --label: firebrick;
+}
+
+.containerError:hover {
+  --border: firebrick;
+}
+
+.containerError:focus-within {
+  --border: firebrick;
+  --outline: firebrick;
+  --label: firebrick;
+}
+
+.input {
+  width: 100%;
+  border: 0;
+  border-radius: inherit;
+  padding: 10px 16px;
+  outline: 0;
+  color: currentColor;
+}
+
+.input:placeholder {
+  opacity: 0;
+}
+
+.input:not(:placeholder-shown) {
+  color: var(--text);
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%) translateX(-4px);
+  max-width: 80%;
+  padding: 0 4px;
+  transform-origin: top left;
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  color: var(--label);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.error {
+  position: absolute;
+  top: 100%;
+  font-size: 12px;
+  transform: translateY(4px);
+  color: firebrick;
+}
