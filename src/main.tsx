@@ -1,19 +1,18 @@
 import './styles.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Checkbox } from './components/Checkbox';
+import { Modal } from './components/Modal';
+import { Button } from './components/Button';
 
 function App() {
-  const [checked, setChecked] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   return (
     <div className="sc-container">
-      <Checkbox checked={checked} onChange={setChecked} />
-      <Checkbox checked={checked} disabled onChange={setChecked} />
-      <div>
-        <label htmlFor="custom">Disabled</label>
-        <Checkbox checked={checked} onChange={setChecked} id="custom" />
-      </div>
+      <Button onClick={() => setOpen(true)}>Open Modal</Button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div>hello world</div>
+      </Modal>
     </div>
   );
 }

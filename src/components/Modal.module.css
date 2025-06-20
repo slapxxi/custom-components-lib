@@ -1,0 +1,36 @@
+.root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  background-color: hsla(0, 0%, 0%, 0.5);
+}
+
+.containerOpen {
+  opacity: 1;
+  pointer-events: initial;
+}
+
+.content {
+  border: 2px solid black;
+  padding: 20px;
+  min-width: 50%;
+  min-height: 300px;
+  max-height: 95%;
+  overflow-y: auto;
+  background-color: var(--theme-bg);
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0px 3px 5px -1px,
+    rgba(0, 0, 0, 0.14) 0px 5px 8px 0px,
+    rgba(0, 0, 0, 0.12) 0px 1px 14px 0px;
+}
