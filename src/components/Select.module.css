@@ -1,5 +1,6 @@
 .container {
   --border: #b0b0b0;
+  --bg: var(--theme-bg);
   position: relative;
   display: inline-flex;
   border: 1px solid var(--border);
@@ -7,6 +8,7 @@
   align-items: center;
   min-width: 120px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg);
   line-height: 1.75;
   padding: 10px 16px;
   padding-right: 10px;
@@ -135,6 +137,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+  border-radius: 2px;
 }
 
 .labelActive {

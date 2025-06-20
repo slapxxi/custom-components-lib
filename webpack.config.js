@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isProductionMode = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: './src/main.tsx',
+  entry: './src/index.ts',
   mode: isProductionMode ? 'production' : 'development',
   devtool: 'inline-source-map',
   devServer: {
@@ -15,12 +15,20 @@ module.exports = {
   output: {
     filename: 'main.bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    library: '@slapxxi/custom-components-lib',
+    libraryTarget: 'umd',
+    clean: true,
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [{ loader: 'ts-loader', options: { transpileOnly: true } }],
+        use: [
+          {
+            loader: 'ts-loader',
+            options: { transpileOnly: isProductionMode ? false : true },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -39,7 +47,8 @@ module.exports = {
         test: /\.css$/,
         exclude: /\.module\.css$/,
         use: [
-          isProductionMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          // isProductionMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          'style-loader',
           'css-loader',
         ],
       },
@@ -51,7 +60,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ template: './src/index.html' }),
     new MiniCssExtractPlugin({
-      filename: isProductionMode ? '[name].[contenthash].css' : '[name].css',
+      filename: 'main.css',
     }),
   ],
+  externals: {
+    react: 'react',
+    'react-dom': 'react-dom',
+  },
 };
